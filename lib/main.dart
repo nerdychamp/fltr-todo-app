@@ -1,41 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:todo_app/screens/home_screen.dart';
+import 'package:todo_app/services/theme_services.dart';
 import 'package:todo_app/utils/theme.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
+
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  bool isDark = false;
-  // This widget is the root of your application.
-  @override
   Widget build(BuildContext context) {
-    onToggleTheme() {
-      setState(() {
-        isDark = !isDark;
-      });
-      print(isDark);
-    }
-
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+      themeMode: ThemeService().themeMode,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       color: blue,
-      home: HomeScreen(
-        onTap: onToggleTheme,
-        isDark: isDark,
-      ),
+      home: const HomeScreen(),
     );
   }
 }

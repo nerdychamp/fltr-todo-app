@@ -1,26 +1,38 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
-  final Function onTap;
-  final bool isDark;
+import '../services/theme_services.dart';
 
-  const HomeScreen({super.key, required this.onTap, required this.isDark});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late bool isDark;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      isDark = ThemeService().isDark;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
-            widget.onTap();
+            ThemeService().switchTheme();
+            setState(() {
+              isDark = ThemeService().isDark;
+            });
           },
           child: Icon(
-            widget.isDark ? Icons.light_mode_rounded : Icons.nightlight_round,
+            isDark ? Icons.light_mode_rounded : Icons.nightlight_round,
             size: 20,
           ),
         ),
@@ -33,17 +45,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: Column(
-        children: [
-          const Text(
+        children: const [
+          Text(
             "Theme Data",
             style: TextStyle(
               fontSize: 30,
             ),
           ),
-          ElevatedButton(
-            onPressed: () {},
-            child: const Text("Press me"),
-          )
         ],
       ),
     );
