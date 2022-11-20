@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,58 +11,81 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: CounterScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
+class CounterController extends GetxController {
+  var count = 0.obs;
+  increment() => count++;
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class CounterScreen extends StatelessWidget {
+  CounterScreen({super.key});
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  final CounterController counter = Get.put(CounterController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text('GetX counter demo'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             const Text(
               'You have pushed the button this many times:',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            Obx(
+              () => Text(
+                '${counter.count}',
+                style: Theme.of(context).textTheme.headline3,
+              ),
+            ),
+            ElevatedButton(
+              child: const Text("Go to Next page"),
+              onPressed: () => Get.to(
+                NextPage(),
+              ),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: counter.increment,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class NextPage extends StatelessWidget {
+  NextPage({super.key});
+
+  // We can ask Get to find a Controller that is being used by another page and redirect you to it.
+  final CounterController counter = Get.find<CounterController>();
+
+  @override
+  Widget build(context) {
+    // Access the updated count variable
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Counter ${counter.count}"),
+      ),
+      body: Center(
+        child: Text(
+          "${counter.count}",
+          style: Theme.of(context).textTheme.headline3,
+        ),
       ),
     );
   }
