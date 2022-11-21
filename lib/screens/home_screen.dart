@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:todo_app/services/notification_service.dart';
+import 'package:todo_app/widgets/theme_toggle_btn.dart';
 
-import '../services/theme_services.dart';
+import '../services/theme_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,10 +14,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late bool isDark;
+  late NotifyHelper notifyHelper;
 
   @override
   void initState() {
     super.initState();
+    notifyHelper = NotifyHelper();
+    notifyHelper.initializeNotification();
+    notifyHelper.requestIOSPermissions();
     setState(() {
       isDark = ThemeService().isDark;
     });
@@ -24,17 +31,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(
+        leading: ThemeToggleBtn(
           onTap: () {
             ThemeService().switchTheme();
             setState(() {
               isDark = ThemeService().isDark;
             });
+            notifyHelper.displayNotification(
+              title: "Theme changed",
+              body: Get.isDarkMode ? "Dark mode" : "Light mode",
+            );
+            notifyHelper.scheduledNotification();
           },
-          child: Icon(
-            isDark ? Icons.light_mode_rounded : Icons.nightlight_round,
-            size: 20,
-          ),
+          isDark: isDark,
         ),
         actions: const [
           Icon(

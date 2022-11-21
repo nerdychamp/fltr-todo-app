@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:todo_app/screens/home_screen.dart';
-import 'package:todo_app/services/theme_services.dart';
+import 'package:todo_app/services/theme_service.dart';
 import 'package:todo_app/utils/theme.dart';
 
 Future<void> main() async {
